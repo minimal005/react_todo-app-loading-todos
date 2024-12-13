@@ -18,20 +18,23 @@ export const Footer: React.FC<Props> = ({ field, setField, activeTodos }) => {
       </span>
 
       <nav className="filter" data-cy="Filter">
-        <a
-          onClick={() => setField(Field.ALL)}
-          href="#/"
-          className={cn('filter__link', { selected: field === Field.ALL })}
-          data-cy="FilterLinkAll"
-        >
-          All
-        </a>
+        {[Field.ALL, Field.ACTIVE, Field.COMPLETED].map(link => (
+          <a
+            key={link}
+            onClick={() => setField(link)}
+            href="#/"
+            className={cn('filter__link', { selected: field === link })}
+            data-cy={`FilterLink${link}`}
+          >
+            {link}
+          </a>
+        ))}
 
-        <a
+        {/* <a
           onClick={() => setField(Field.ACTIVE)}
           href="#/active"
           className={cn('filter__link', { selected: field === Field.ACTIVE })}
-          data-cy="FilterLinkActive"
+          data-cy={`FilterLink${link}`}
         >
           Active
         </a>
@@ -45,7 +48,7 @@ export const Footer: React.FC<Props> = ({ field, setField, activeTodos }) => {
           data-cy="FilterLinkCompleted"
         >
           Completed
-        </a>
+        </a> */}
       </nav>
 
       <button
