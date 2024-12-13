@@ -29,26 +29,6 @@ export const Footer: React.FC<Props> = ({ field, setField, activeTodos }) => {
             {link}
           </a>
         ))}
-
-        {/* <a
-          onClick={() => setField(Field.ACTIVE)}
-          href="#/active"
-          className={cn('filter__link', { selected: field === Field.ACTIVE })}
-          data-cy={`FilterLink${link}`}
-        >
-          Active
-        </a>
-
-        <a
-          onClick={() => setField(Field.COMPLETED)}
-          href="#/completed"
-          className={cn('filter__link', {
-            selected: field === Field.COMPLETED,
-          })}
-          data-cy="FilterLinkCompleted"
-        >
-          Completed
-        </a> */}
       </nav>
 
       <button
