@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import * as todosService from '../api/todos';
 
 import { Todo } from '../types/Todo';
@@ -18,27 +18,10 @@ export const TodoItem: React.FC<Props> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [value, setValue] = useState('');
 
-  const todoCurrentRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    const current = todoCurrentRef.current;
-
-    if (!current) {
-      return;
-    }
-
-    function editTodo() {
-      setValue(todo.title);
-      setIsEdited(true);
-    }
-
-    current.addEventListener('dblclick', editTodo);
-
-    return () => {
-      setIsEdited(false);
-      current.removeEventListener('dblclick', editTodo);
-    };
-  }, []);
+  function editTodo() {
+    setValue(todo.title);
+    setIsEdited(true);
+  }
 
   const handleCheck = () => {
     changeComplete(todo);
@@ -91,7 +74,7 @@ export const TodoItem: React.FC<Props> = ({
           <span
             data-cy="TodoTitle"
             className="todo__title"
-            ref={todoCurrentRef}
+            onDoubleClick={editTodo}
           >
             {todo.title}
           </span>
