@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import * as todosService from './api/todos';
 
 import { ErrorMessages } from './components/ErrorsMessage';
@@ -8,14 +8,12 @@ import Header from './components/Header';
 
 import { Todo } from './types/Todo';
 import { Field } from './types/Field';
-import { preparedTodos } from './service/service';
+import { filterByTodos, preparedTodos } from './service/service';
 
 export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [errorMessage, setErrorMessage] = useState('');
   const [field, setField] = useState<Field>(Field.ALL);
-
-  const todosCounter = useRef(0);
 
   useEffect(() => {
     todosService
@@ -24,17 +22,13 @@ export const App: React.FC = () => {
       .catch(() => setErrorMessage('Unable to load todos'));
   }, []);
 
+  const todosCounter = filterByTodos(todos);
+
   useEffect(() => {
     const timerId = window.setTimeout(() => setErrorMessage(''), 4000);
 
     return () => clearTimeout(timerId);
   }, [errorMessage]);
-
-  useEffect(() => {
-    const todosActive = todos.filter(todo => !todo.completed);
-
-    todosCounter.current = todosActive.length;
-  }, [todos]);
 
   const changeComplete = useCallback(
     (todoChanged?: Todo) => {
@@ -61,7 +55,7 @@ export const App: React.FC = () => {
         <Header
           todos={todos}
           setTodos={setTodos}
-          todosCounter={todosCounter.current}
+          todosCounter={todosCounter.length}
           changeComplete={changeComplete}
         />
 
@@ -77,7 +71,7 @@ export const App: React.FC = () => {
           <Footer
             field={field}
             setField={setField}
-            activeTodos={todosCounter.current}
+            activeTodos={todosCounter.length}
           />
         )}
       </div>
