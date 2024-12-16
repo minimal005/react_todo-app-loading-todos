@@ -10,7 +10,7 @@ type Props = {
   changeComplete: (todo?: Todo) => void;
 };
 
-export const Header: React.FC<Props> = ({
+const Header: React.FC<Props> = ({
   todos,
   setTodos,
   todosCounter,
@@ -22,7 +22,7 @@ export const Header: React.FC<Props> = ({
 
   return (
     <header className="todoapp__header">
-      {todos && (
+      {!!todos.length && (
         <button
           onClick={() => handlChangeAllCompleted}
           type="button"
@@ -37,3 +37,5 @@ export const Header: React.FC<Props> = ({
     </header>
   );
 };
+
+export default React.memo(Header);

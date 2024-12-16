@@ -1,19 +1,21 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import * as todosService from './api/todos';
 
 import { ErrorMessages } from './components/ErrorsMessage';
-import { TodoList } from './components/TodoList';
+import TodoList from './components/TodoList';
 import { Footer } from './components/Footer';
-import { Header } from './components/Header';
+import Header from './components/Header';
 
 import { Todo } from './types/Todo';
 import { Field } from './types/Field';
+import { preparedTodos } from './service/service';
 
 export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [todosCounter, setTodosCounter] = useState<number>(0);
   const [errorMessage, setErrorMessage] = useState('');
   const [field, setField] = useState<Field>(Field.ALL);
+
+  const todosCounter = useRef(0);
 
   useEffect(() => {
     todosService
@@ -31,17 +33,13 @@ export const App: React.FC = () => {
   useEffect(() => {
     const todosActive = todos.filter(todo => !todo.completed);
 
-    setTodosCounter(todosActive.length);
+    todosCounter.current = todosActive.length;
   }, [todos]);
 
   const changeComplete = useCallback(
     (todoChanged?: Todo) => {
       const changedTodos = todos.map(todo => {
-        if (!todoChanged) {
-          return { ...todo, completed: !todo.completed };
-        }
-
-        if (todo.id !== todoChanged.id) {
+        if (todo.id !== todoChanged?.id) {
           return todo;
         } else {
           return { ...todo, completed: !todo.completed };
@@ -53,18 +51,7 @@ export const App: React.FC = () => {
     [todos],
   );
 
-  const filteredTodos = useMemo(() => {
-    const preparedTodos = [...todos];
-
-    switch (field) {
-      case Field.COMPLETED:
-        return preparedTodos.filter(todo => todo.completed);
-      case Field.ACTIVE:
-        return preparedTodos.filter(todo => !todo.completed);
-      default:
-        return preparedTodos;
-    }
-  }, [todos, field]);
+  const filteredTodos = preparedTodos(todos, field);
 
   return (
     <div className="todoapp">
@@ -74,11 +61,11 @@ export const App: React.FC = () => {
         <Header
           todos={todos}
           setTodos={setTodos}
-          todosCounter={todosCounter}
+          todosCounter={todosCounter.current}
           changeComplete={changeComplete}
         />
 
-        {todos && (
+        {!!todos.length && (
           <TodoList
             filteredTodos={filteredTodos}
             changeComplete={changeComplete}
@@ -90,7 +77,7 @@ export const App: React.FC = () => {
           <Footer
             field={field}
             setField={setField}
-            activeTodos={todosCounter}
+            activeTodos={todosCounter.current}
           />
         )}
       </div>

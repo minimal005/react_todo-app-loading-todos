@@ -9,7 +9,7 @@ type Props = {
   setTodos: (todos: Todo[] | ((prevTodos: Todo[]) => Todo[])) => void;
 };
 
-export const TodoList: React.FC<Props> = ({
+const TodoList: React.FC<Props> = ({
   filteredTodos,
   changeComplete,
   setTodos,
@@ -27,3 +27,5 @@ export const TodoList: React.FC<Props> = ({
     </section>
   );
 };
+
+export default React.memo(TodoList);
